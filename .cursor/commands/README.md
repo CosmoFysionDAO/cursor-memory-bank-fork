@@ -75,6 +75,22 @@ This directory contains Cursor 2.0 commands for the Memory Bank workflow. Each c
 
 **Next steps:** → `/van` (next task)
 
+## Shortcut commands (prompt-based)
+
+Standalone commands that run a focused prompt. Use when you want a quick result without the full Memory Bank phase.
+
+| Command | Purpose |
+|---------|--------|
+| `/creative-analyze` | Analyze project architecture and documentation; propose creative design or optimization (R&D, scalability focus). |
+| `/adr` | Generate an Architecture Decision Record: context, alternatives, decision, pros/cons. Output: `memory-bank/decisions/adr-{timestamp}.md`. |
+| `/rnd` | Deep-dive research: compare 2–3 approaches (Go/Infrastructure), trade-offs, recommendation. Output: `memory-bank/creative/rnd-{feature}.md`. |
+| `/debrief` | Sync Memory Bank: update `progress.md`, `activeContext.md`, `decisionLog.md` from latest work. |
+| `/testify` | Generate table-driven tests (TDT) for selected/current Go code; edge cases, errors, concurrency. |
+| `/proto` | Generate/update gRPC .proto definitions; documentation, naming, Apollo Federation compatibility. |
+| `/dockerize` | Generate production multi-stage Dockerfile and docker-compose; non-root, healthchecks. |
+
+**Note:** `/creative` (full workflow), `/build testify`, `/build proto`, `/build dockerize` remain the Memory Bank–integrated variants. Use these shortcuts for one-off runs.
+
 ## Utility commands (outside main workflow)
 
 ### `/agent` - Security Agent Mode
