@@ -2,9 +2,14 @@
 
 This command implements the planned changes following the implementation plan and creative phase decisions. It enforces a test-driven approach where tests are written for all success criteria and must pass before completing each phase.
 
-**Subcommands:** If the user invoked `/build` with a subcommand (e.g. `/build testify`, `/build proto`, `/build dockerize`), execute **only** that subcommand (see "Build Subcommands" below), then update `memory-bank/progress.md` with what was generated. Otherwise run the full build workflow.
+**Subcommands:** If the user invoked `/build` with a subcommand (e.g. `/build testify`, `/build proto`, `/build dockerize`, `/build security-check`), execute **only** that subcommand (see "Build Subcommands" below), then update `memory-bank/progress.md` with what was generated where applicable. Otherwise run the full build workflow.
 
 ## Build Subcommands
+
+### `/build security-check`
+- **Action:** Before proceeding with the build, run a quick security check (equivalent to `/agent check`). If critical (high-severity) issues are found, **abort** the build and report them; suggest the user run `/agent audit` or fix the issues first. If no critical issues, continue with the normal build workflow.
+- **Implementation:** Run `node .cursor/commands/agent.js check` (or perform the same static analysis and secret scan as in `/agent check`). Exit code 1 from the script means abort build.
+- **After completion:** If check passed, append to `memory-bank/progress.md`: "Security check passed before build." If aborted, do not update progress with build steps until issues are resolved.
 
 ### `/build testify` (or `!testify`)
 - **Input:** The code currently selected in the editor, or the current file (Go code).

@@ -1,0 +1,10 @@
+---
+description: "Security rules derived from agent audit. Avoid hardcoded secrets and unsafe exec."
+globs: "**/*"
+alwaysApply: false
+---
+# Agent Security Rules (from /agent update-rules)
+
+- Do not add hardcoded API keys, passwords, or secrets. Use environment variables or placeholders.
+- Avoid exec.Command/exec.CommandContext with string interpolation; use structured args.
+- Follow AGENT.md and .agentignore for sensitive paths.

@@ -250,6 +250,8 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 - **`/build proto`**: Generates/updates `.proto` files (Apollo Federation–aware); updates `memory-bank/progress.md`
 - **`/build dockerize`**: Generates multi-stage Dockerfile and docker-compose.yml (non-root, healthchecks); updates `memory-bank/progress.md`
 
+- **`/build security-check`**: Run `/agent check` before build; abort if critical security issues found.
+
 **Next steps:**
 - After implementation or subcommand complete → `/reflect`
 
@@ -287,6 +289,43 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 
 **Next steps:**
 - After archiving complete → `/van` (for next task)
+
+### Utility commands (outside main workflow)
+
+#### `/agent` - Security Agent Mode
+**Purpose:** Initialize and run security agent mode: init, audit, update rules, quick check. Not part of the `/van` → … → `/archive` chain. Can be run anytime.
+
+**Usage:**
+```
+/agent init
+/agent audit
+/agent update-rules
+/agent check
+```
+
+**What it does:**
+- **`/agent init`:** Creates `AGENT.md` and `.agentignore` in project root; scans for potential secrets (suggests adding paths to `.agentignore`); ensures `memory-bank/audit/`; updates `memory-bank/activeContext.md`.
+- **`/agent audit`:** Deep security audit (static code, dependencies, Docker/Terraform/nginx); writes report to `AGENT.md` and `memory-bank/audit/audit-{timestamp}.md`; updates `memory-bank/progress.md`.
+- **`/agent update-rules`:** Updates `.cursor/rules/` from latest audit; updates `memory-bank/decisionLog.md`.
+- **`/agent check`:** Quick check (static + secrets). Exit code 1 if critical issues (for pre-commit/CI). Programmatic: `node .cursor/commands/agent.js check`.
+
+**When to use:** After cloning/setup run `init`; periodically run `audit`; use `check` before build or in CI.
+
+#### `/security` - Check Security Agent Mode
+**Purpose:** Check and update agent security configuration and rules. Not part of the `/van` → … → `/archive` chain.
+
+**Usage:**
+```
+/security
+```
+
+**What it does:**
+- **Deep research:** Looks up Cursor Agent Security, `.cursorignore`, AGENTS.md/AGENT.md, and best practices (e.g. docs.cursor.com); summarizes findings.
+- **.cursorignore:** Creates or updates project-root `.cursorignore` with patterns for `.env*`, credentials, keys, `**/private/**`, `**/secrets/**` (using `.cursor/templates/cursorignore_security_defaults.md`).
+- **AGENT.md / AGENTS.md:** Creates or updates the project agent doc and adds/refreshes a security section (from `.cursor/templates/agent_security_snippet.md`).
+- **.cursor/rules:** Creates or updates security-only rules (e.g. `security.mdc`): do not read/change ignored files, do not embed secrets, follow AGENT.md.
+
+**When to use:** After setup, when adding sensitive paths, or to align with current Cursor docs.
 
 ### Example Workflow
 
