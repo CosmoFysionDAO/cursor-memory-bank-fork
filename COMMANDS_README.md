@@ -27,28 +27,39 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 - Creative phases identified → `/creative`
 - No creative phases → `/build`
 
-### `/creative` - Design Decisions
-**Purpose:** Perform structured design exploration for components requiring creative phases.
+### `/creative` - Design Decisions (Extended)
+**Purpose:** Perform structured design exploration. **Mode is selected by the current task `type` in `memory-bank/tasks.md`:**
+- **`type: architecture-decision`** → ADR mode: creates `memory-bank/decisions/adr-{timestamp}.md` (template: `.cursor/templates/adr_template.md`)
+- **`type: research-spike`** → R&D mode: creates `memory-bank/creative/rnd-{feature}.md` (template: `.cursor/templates/rnd_template.md`)
+- **Default** → Standard creative workflow; creates `memory-bank/creative/creative-[feature_name].md`
 
 **When to use:**
 - After `/plan` identifies components needing design decisions
-- Need to explore architecture, UI/UX, or algorithm options
+- Need an Architecture Decision Record (ADR)
+- Need an R&D comparison (2–3 approaches, trade-offs, recommendation)
 
 **Next steps:**
 - After all creative phases complete → `/build`
 
-### `/build` - Code Implementation
-**Purpose:** Implement planned changes following the implementation plan and creative decisions.
+### `/build` - Code Implementation (with Subcommands)
+**Purpose:** Implement planned changes, or run a subcommand to generate a specific artifact.
+
+**Subcommands:**
+- **`/build testify`** – Generate table-driven tests (TDT) for selected/current Go code; update `memory-bank/progress.md`
+- **`/build proto`** – Generate or update `.proto` files (Apollo Federation–aware); update `memory-bank/progress.md`
+- **`/build dockerize`** – Generate multi-stage Dockerfile and docker-compose.yml (non-root, healthchecks); update `memory-bank/progress.md`
 
 **When to use:**
-- After planning is complete (and creative phases if needed)
-- Ready to start coding
+- After planning is complete (and creative phases if needed) → use `/build` for full implementation
+- Need tests for Go code → `/build testify`
+- Need proto definitions → `/build proto`
+- Need container setup → `/build dockerize`
 
 **Next steps:**
-- After implementation complete → `/reflect`
+- After implementation or subcommand complete → `/reflect`
 
 ### `/reflect` - Task Reflection
-**Purpose:** Facilitate structured reflection on completed implementation.
+**Purpose:** Facilitate structured reflection on completed implementation. **At the end, runs Memory Bank Synchronization (Debrief)** automatically: updates `progress.md`, adjusts `activeContext.md`, appends ADR references to `decisionLog.md`.
 
 **When to use:**
 - After `/build` completes implementation
@@ -58,7 +69,7 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 - After reflection complete → `/archive`
 
 ### `/archive` - Task Archiving
-**Purpose:** Create comprehensive archive documentation and update Memory Bank.
+**Purpose:** Create comprehensive archive documentation and update Memory Bank. **Before completing, runs Debrief:** final progress summary, reset `activeContext.md`, update `decisionLog.md` with ADR references.
 
 **When to use:**
 - After `/reflect` completes reflection
@@ -95,9 +106,11 @@ All commands read from and update files in the `memory-bank/` directory:
 - **activeContext.md** - Current project focus
 - **progress.md** - Implementation status
 - **projectbrief.md** - Project foundation
-- **creative/** - Creative phase documents
+- **creative/** - Creative phase documents, R&D documents (`rnd-*.md`)
+- **decisions/** - Architecture Decision Records (`adr-{timestamp}.md`)
 - **reflection/** - Reflection documents
 - **archive/** - Archive documents
+- **decisionLog.md** - Log of ADR references (updated by debrief in `/reflect` and `/archive`)
 
 ## Usage Examples
 
@@ -116,10 +129,24 @@ All commands read from and update files in the `memory-bank/` directory:
 /creative
 ```
 
+### ADR and R&D (Creative modes)
+In `memory-bank/tasks.md` set the active task to `type: architecture-decision` or `type: research-spike`, then:
+```
+/creative
+```
+
 ### Implementing Changes
 ```
 /build
 ```
+
+### Build Subcommands (testify, proto, dockerize)
+```
+/build testify
+/build proto
+/build dockerize
+```
+Each updates `memory-bank/progress.md` with the generated artifact.
 
 ### Reflecting on Completion
 ```

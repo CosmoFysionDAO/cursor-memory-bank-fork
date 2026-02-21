@@ -2,6 +2,31 @@
 
 This command implements the planned changes following the implementation plan and creative phase decisions. It enforces a test-driven approach where tests are written for all success criteria and must pass before completing each phase.
 
+**Subcommands:** If the user invoked `/build` with a subcommand (e.g. `/build testify`, `/build proto`, `/build dockerize`), execute **only** that subcommand (see "Build Subcommands" below), then update `memory-bank/progress.md` with what was generated. Otherwise run the full build workflow.
+
+## Build Subcommands
+
+### `/build testify` (or `!testify`)
+- **Input:** The code currently selected in the editor, or the current file (Go code).
+- **Action:** Analyze the Go code and generate **table-driven tests (TDT)** that cover:
+  - Edge cases, error conditions, and concurrency where relevant.
+- **Output:** Propose the generated test code for the user to insert (or insert into the file if the user prefers).
+- **After completion:** Append to `memory-bank/progress.md`: "Generated table-driven tests for [target]."
+
+### `/build proto`
+- **Input:** Domain logic from the codebase (comments, structs, or described behavior).
+- **Action:** Generate or update `.proto` files with appropriate services and messages. Ensure compatibility with **Apollo Federation** (add federation options/directives as needed for the project).
+- **Output:** Create or update proto files in the project’s designated proto directory.
+- **After completion:** Append to `memory-bank/progress.md`: "Generated/updated .proto definitions for [domain/feature]."
+
+### `/build dockerize`
+- **Input:** Project structure and runtime requirements.
+- **Action:** Generate:
+  - A **multi-stage Dockerfile** (production-ready, non-root user, layer caching).
+  - A **docker-compose.yml** with healthchecks and non-root execution where applicable.
+- **Output:** Place `Dockerfile` and `docker-compose.yml` in the project root (or documented location).
+- **After completion:** Append to `memory-bank/progress.md`: "Generated Dockerfile and docker-compose.yml."
+
 ## Memory Bank Integration
 
 Reads from:
@@ -11,7 +36,7 @@ Reads from:
 
 Updates:
 - `memory-bank/tasks.md` - Implementation progress, test results, and status
-- `memory-bank/progress.md` - Build status, test outcomes, and observations
+- `memory-bank/progress.md` - Build status, test outcomes, observations, **and subcommand artifacts** (testify/proto/dockerize)
 
 ## Progressive Rule Loading
 
@@ -109,7 +134,8 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
 
 ## Usage
 
-Type `/build` to start implementation based on the plan in `memory-bank/tasks.md`.
+- **Full build:** Type `/build` to start implementation based on the plan in `memory-bank/tasks.md`.
+- **Subcommands:** Type `/build testify`, `/build proto`, or `/build dockerize` to run only that generator; then update `memory-bank/progress.md` accordingly.
 
 ## Next Steps
 

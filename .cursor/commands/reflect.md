@@ -14,6 +14,9 @@ Creates:
 
 Updates:
 - `memory-bank/tasks.md` - Reflection status
+- `memory-bank/progress.md` - Debrief: work completed this phase
+- `memory-bank/activeContext.md` - Adjust context for next step
+- `memory-bank/decisionLog.md` - Append ADR references from `memory-bank/decisions/` (create if missing)
 
 ## Progressive Rule Loading
 
@@ -90,6 +93,13 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
 5. **Update Memory Bank**
    - Update `memory-bank/tasks.md` with reflection status
    - Mark reflection phase as complete
+
+6. **Memory Bank Synchronization (Debrief)** — run automatically at the end of `/reflect`
+   - **synchronizeMemoryBank():**
+     - Analyze project changes since the last commit (or since task start); use `git diff` or the list of changed files if available from the environment.
+     - Update `memory-bank/progress.md`: add a short description of work completed in this phase.
+     - Update `memory-bank/activeContext.md`: adjust or narrow context for the next step (do not fully reset yet; that happens in `/archive`).
+     - If any ADRs were created in `memory-bank/decisions/` during this task, append a brief entry to `memory-bank/decisionLog.md` (date, ADR file name, one-line summary). Create `memory-bank/decisionLog.md` if it does not exist.
 
 ## Usage
 

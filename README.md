@@ -212,8 +212,11 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 - Creative phases identified → `/creative`
 - No creative phases → `/build`
 
-#### `/creative` - Design Decisions
-**Purpose:** Perform structured design exploration for flagged components.
+#### `/creative` - Design Decisions (Extended)
+**Purpose:** Perform structured design exploration. Mode is selected by the current task **`type`** in `memory-bank/tasks.md`:
+- **`type: architecture-decision`** → ADR mode: creates `memory-bank/decisions/adr-{timestamp}.md`
+- **`type: research-spike`** → R&D mode: creates `memory-bank/creative/rnd-{feature}.md` (2–3 approaches, trade-offs, recommendation)
+- **Default** → Standard creative workflow
 
 **Usage:**
 ```
@@ -221,37 +224,37 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 ```
 
 **What it does:**
-- Reads components flagged for creative work from `memory-bank/tasks.md`
-- For each component, explores multiple design options
-- Analyzes pros/cons of each approach
-- Selects and documents recommended approach
-- Creates `memory-bank/creative/creative-[feature_name].md` documents
+- Reads `memory-bank/tasks.md` and `memory-bank/activeContext.md` to determine task type
+- ADR mode: uses `.cursor/templates/adr_template.md`, outputs to `memory-bank/decisions/`
+- R&D mode: uses `.cursor/templates/rnd_template.md`, outputs to `memory-bank/creative/rnd-*.md`
+- Standard: reads components flagged for creative work, explores options, creates `memory-bank/creative/creative-[feature_name].md`
 - Updates `memory-bank/tasks.md` with design decisions
 
 **Next steps:**
 - After all creative phases complete → `/build`
 
-#### `/build` - Code Implementation
-**Purpose:** Implement planned changes following the plan and creative decisions.
+#### `/build` - Code Implementation (with Subcommands)
+**Purpose:** Implement planned changes, or run a subcommand to generate tests, proto, or Docker artifacts.
 
 **Usage:**
 ```
 /build
+/build testify
+/build proto
+/build dockerize
 ```
 
 **What it does:**
-- Reads implementation plan from `memory-bank/tasks.md`
-- Reads creative phase documents (Level 3-4)
-- Implements changes systematically
-- Tests implementation
-- Documents commands executed and results
-- Updates `memory-bank/tasks.md` and `memory-bank/progress.md`
+- **`/build`** (no args): Reads plan from `memory-bank/tasks.md`, implements changes, tests, updates `memory-bank/tasks.md` and `memory-bank/progress.md`
+- **`/build testify`**: Analyzes selected/current Go code; generates table-driven tests (TDT); updates `memory-bank/progress.md`
+- **`/build proto`**: Generates/updates `.proto` files (Apollo Federation–aware); updates `memory-bank/progress.md`
+- **`/build dockerize`**: Generates multi-stage Dockerfile and docker-compose.yml (non-root, healthchecks); updates `memory-bank/progress.md`
 
 **Next steps:**
-- After implementation complete → `/reflect`
+- After implementation or subcommand complete → `/reflect`
 
 #### `/reflect` - Task Reflection
-**Purpose:** Facilitate structured reflection on completed implementation.
+**Purpose:** Facilitate structured reflection on completed implementation. **At the end, runs Memory Bank Synchronization (Debrief)** automatically.
 
 **Usage:**
 ```
@@ -259,20 +262,16 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 ```
 
 **What it does:**
-- Reviews completed implementation
-- Compares against original plan
-- Documents what went well
-- Documents challenges encountered
-- Documents lessons learned
-- Documents process and technical improvements
+- Reviews completed implementation, compares against plan, documents lessons learned
 - Creates `memory-bank/reflection/reflection-[task_id].md`
 - Updates `memory-bank/tasks.md` with reflection status
+- **Debrief:** Updates `memory-bank/progress.md`, adjusts `memory-bank/activeContext.md`, appends ADR references to `memory-bank/decisionLog.md` (create if missing)
 
 **Next steps:**
 - After reflection complete → `/archive`
 
 #### `/archive` - Task Archiving
-**Purpose:** Create comprehensive archive documentation and update Memory Bank.
+**Purpose:** Create comprehensive archive documentation and update Memory Bank. **Before completing, runs Debrief** to sync Memory Bank.
 
 **Usage:**
 ```
@@ -281,12 +280,10 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 
 **What it does:**
 - Reads reflection document and task details
-- Creates comprehensive archive document
-- Archives creative phase documents (Level 3-4)
-- Updates `memory-bank/tasks.md` marking task COMPLETE
-- Updates `memory-bank/progress.md` with archive reference
-- Resets `memory-bank/activeContext.md` for next task
 - Creates `memory-bank/archive/archive-[task_id].md`
+- Updates `memory-bank/tasks.md` marking task COMPLETE, updates `memory-bank/progress.md`
+- Resets `memory-bank/activeContext.md` for next task
+- **Debrief:** Final progress summary, update `memory-bank/decisionLog.md` with any new ADR references
 
 **Next steps:**
 - After archiving complete → `/van` (for next task)
@@ -326,7 +323,8 @@ graph LR
         Active["activeContext.md<br>Current Focus"]
         Progress["progress.md<br>Implementation Status"]
         Brief["projectbrief.md<br>Project Foundation"]
-        Creative["creative/<br>Design Decisions"]
+        Creative["creative/<br>Design & R&D"]
+        Decisions["decisions/<br>ADRs"]
         Reflect["reflection/<br>Review Documents"]
         Archive["archive/<br>Completed Tasks"]
     end
@@ -336,6 +334,7 @@ graph LR
     style Progress fill:#c5e8b7,stroke:#a5c897,color:black
     style Brief fill:#d9b3ff,stroke:#b366ff,color:black
     style Creative fill:#f4b8c4,stroke:#d498a4,color:black
+    style Decisions fill:#e8d5b7,stroke:#c8b597,color:black
     style Reflect fill:#b3e6cc,stroke:#66c999,color:black
     style Archive fill:#ffd9b3,stroke:#ffb366,color:black
 ```
@@ -353,6 +352,9 @@ graph LR
 ### Generated Files
 
 - **`creative/creative-[feature_name].md`**: Design decision documents (Level 3-4)
+- **`creative/rnd-[feature].md`**: R&D comparison documents (when `type: research-spike`)
+- **`decisions/adr-{timestamp}.md`**: Architecture Decision Records (when `type: architecture-decision`)
+- **`decisionLog.md`**: Log of ADR references (updated by debrief in `/reflect` and `/archive`)
 - **`reflection/reflection-[task_id].md`**: Reflection documents
 - **`archive/archive-[task_id].md`**: Archive documents for completed tasks
 

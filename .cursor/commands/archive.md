@@ -15,8 +15,9 @@ Creates:
 
 Updates:
 - `memory-bank/tasks.md` - Mark task as COMPLETE
-- `memory-bank/progress.md` - Add archive reference
+- `memory-bank/progress.md` - Add archive reference, final debrief summary
 - `memory-bank/activeContext.md` - Reset for next task
+- `memory-bank/decisionLog.md` - Append any ADR references from `memory-bank/decisions/` (create if missing)
 
 ## Progressive Rule Loading
 
@@ -113,6 +114,13 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
    - Update `memory-bank/progress.md` with archive reference
    - Reset `memory-bank/activeContext.md` for next task
    - Clear completed task details from `memory-bank/tasks.md` (keep structure)
+
+5. **Memory Bank Synchronization (Debrief)** — run automatically before completing `/archive`
+   - **synchronizeMemoryBank():**
+     - Analyze project changes since the last sync or since task start (e.g. `git diff` or list of changed files).
+     - Update `memory-bank/progress.md` with a final summary of completed work and a reference to the new archive document.
+     - Reset `memory-bank/activeContext.md` for the next task (clear current focus, leave only project-level context if needed).
+     - Update `memory-bank/decisionLog.md`: add any remaining ADR references from `memory-bank/decisions/` that were not yet logged. Create `memory-bank/decisionLog.md` if it does not exist.
 
 ## Usage
 
