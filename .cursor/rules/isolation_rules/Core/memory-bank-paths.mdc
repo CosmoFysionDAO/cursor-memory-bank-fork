@@ -19,5 +19,6 @@ alwaysApply: true
 * **Creative Phase Docs:** `memory-bank/creative/creative-[feature_name].md`
 * **Reflection Docs:** `memory-bank/reflection/reflection-[task_id].md`
 * **Archive Directory:** `memory-bank/archive/archive-[task_id].md`
+* **Audit Directory:** `memory-bank/audit/` — Security audit reports (`audit-{timestamp}.md`, created by `/agent audit`)
 
 **Verification Mandate:** Before any `create_file` or `edit_file` operation on these core files, verify the path starts with `memory-bank/`. If attempting to create a new core file (e.g., `tasks.md` at the start of a project), ensure it is created at `memory-bank/tasks.md`.

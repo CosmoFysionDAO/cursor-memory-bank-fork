@@ -1,6 +1,6 @@
 # Extended Commands Integration (Fork)
 
-This fork extends [Memory Bank v0.8](https://github.com/vanzan01/cursor-memory-bank) with the following integrations. **No new top-level commands** are added; all extensions are modes or subcommands within the existing workflow.
+This fork extends [Memory Bank v0.8](https://github.com/vanzan01/cursor-memory-bank) with the following integrations. Workflow extensions are modes or subcommands within the existing chain; **utility commands** (e.g. `/security`) are outside the main workflow.
 
 ## Summary
 
@@ -12,14 +12,22 @@ This fork extends [Memory Bank v0.8](https://github.com/vanzan01/cursor-memory-b
 | **proto** | `/build` subcommand | Run `/build proto` (generates/updates .proto, Apollo Federation–aware) |
 | **dockerize** | `/build` subcommand | Run `/build dockerize` (Dockerfile + docker-compose, non-root, healthchecks) |
 | **debrief** | `/reflect` and `/archive` | Runs automatically at end of `/reflect` and before completion of `/archive` |
+| **/agent** | Utility command | Run `/agent init`, `/agent audit`, `/agent update-rules`, `/agent check` — Security Agent Mode: AGENT.md, .agentignore, memory-bank/audit/, rules from audit |
+| **/build security-check** | `/build` subcommand | Run `/agent check` before build; abort if critical issues |
+| **/security** | Utility command | Run `/security` — Check Security Agent Mode: AGENT.md, .cursorignore, .cursor/rules; deep research to update security rules |
 
 ## Files Added/Modified
 
-- **.cursor/templates/** – `adr_template.md`, `rnd_template.md`
+- **.cursor/templates/** – `adr_template.md`, `rnd_template.md`, `cursorignore_security_defaults.md`, `agent_security_snippet.md`
 - **.cursor/commands/creative.md** – Mode selection (ADR / R&D / standard)
 - **.cursor/commands/build.md** – Subcommands testify, proto, dockerize
 - **.cursor/commands/reflect.md** – Debrief step at end
 - **.cursor/commands/archive.md** – Debrief step before completion
+- **.cursor/commands/agent.md** – Security Agent Mode (utility): init, audit, update-rules, check
+- **.cursor/commands/agent.js** – Node script for programmatic/CI use: `node .cursor/commands/agent.js <subcommand>`
+- **.cursor/commands/security.md** – Check Security Agent Mode (utility)
+- **.cursor/templates/agent_template.md**, **.cursor/templates/agentignore_defaults.md** – Used by `/agent init`
+- **memory-bank/audit/** – Audit reports from `/agent audit`
 - **.cursor/commands/README.md** – New; full command and extension docs
 - **memory-bank/decisions/** – Directory for ADR files (created when first ADR is written)
 - **memory-bank/decisionLog.md** – Created/updated by debrief

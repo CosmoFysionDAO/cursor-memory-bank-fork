@@ -101,6 +101,9 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
      - Update `memory-bank/activeContext.md`: adjust or narrow context for the next step (do not fully reset yet; that happens in `/archive`).
      - If any ADRs were created in `memory-bank/decisions/` during this task, append a brief entry to `memory-bank/decisionLog.md` (date, ADR file name, one-line summary). Create `memory-bank/decisionLog.md` if it does not exist.
 
+7. **Optional: Security audit suggestion**
+   - After debrief, if the task involved security-sensitive changes (auth, secrets, configs, dependencies, or infrastructure), suggest running **`/agent audit`** to refresh the security report. Do not run it automatically without user confirmation.
+
 ## Usage
 
 Type `/reflect` to start reflection on the completed task.

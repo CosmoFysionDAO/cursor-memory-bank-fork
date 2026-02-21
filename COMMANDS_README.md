@@ -78,6 +78,18 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 **Next steps:**
 - After archiving complete → `/van` (for next task)
 
+### `/security` - Check Security Agent Mode (utility)
+**Purpose:** Check and update agent security configuration and rules. Not part of the main workflow.
+
+**When to use:**
+- Setting up or auditing `.cursorignore`, AGENT.md/AGENTS.md, and security rules
+- After adding sensitive paths or changing project structure
+- To align with current Cursor docs and best practices
+
+**What it does:** Runs deep research (Cursor Agent Security, `.cursorignore`, AGENTS.md), then creates or updates `.cursorignore`, AGENT.md/AGENTS.md (including a security section), and security-focused rules in `.cursor/rules/` (e.g. `security.mdc`).
+
+**Usage:** Type `/security`.
+
 ## Command Workflow
 
 ```
@@ -156,6 +168,11 @@ Each updates `memory-bank/progress.md` with the generated artifact.
 ### Archiving Completed Task
 ```
 /archive
+```
+
+### Check Security (utility)
+```
+/security
 ```
 
 ## Migration from Custom Modes
